@@ -1,0 +1,11 @@
+server:
+  port: 4000
+spring:
+  data:
+    mongodb:
+      username: dennis
+      password: dennis
+      host: localhost
+      port: 27017
+      database: customer
+      authentication-database: admin
