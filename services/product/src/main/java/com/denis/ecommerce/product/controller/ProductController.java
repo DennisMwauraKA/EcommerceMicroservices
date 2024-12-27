@@ -1,12 +1,12 @@
 package com.denis.ecommerce.product.controller;
 
 
-import com.denis.ecommerce.product.entity.Product;
-import com.denis.ecommerce.product.entity.ProductRequest;
-import com.denis.ecommerce.product.entity.UpdateDtoRequest;
+import com.denis.ecommerce.product.entity.*;
 import com.denis.ecommerce.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/products")
@@ -44,6 +44,14 @@ public class ProductController {
     @PutMapping("/updateProduct/{product-id}")
     public ResponseEntity<Integer> updateProduct(@PathVariable("product-id") Integer productId, @RequestBody UpdateDtoRequest request) {
         return ResponseEntity.ok(productService.updateProduct(productId, request));
+    }
+
+    // get purchased products
+    @GetMapping("/purchased")
+    public ResponseEntity<List<ProductPurchaseResponse>>purchasedProducts(
+        @RequestBody  List<ProductPurchaseRequest> request
+    ){
+        return ResponseEntity.ok(productService.purchasedProducts(request));
     }
 
 }
