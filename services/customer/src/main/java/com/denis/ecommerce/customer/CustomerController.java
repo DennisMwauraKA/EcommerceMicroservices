@@ -48,14 +48,14 @@ public class CustomerController {
 
     //get customer with the id
 
-    @GetMapping("{/customer-id}")
+    @GetMapping("{customer-id}")
     public ResponseEntity<CustomerResponse> findCustomerById(@PathVariable("customer-id") String customerId) {
         return ResponseEntity.ok(customerService.findCustomerById(customerId));
 
     }
 
     //Delete customer with the associated id
-    @DeleteMapping("{/customer-id}")
+    @DeleteMapping("{customer-id}")
     public ResponseEntity<String> deleteCustomer(@PathVariable("customer-id") String customerId) {
         return ResponseEntity.ok(customerService.deleteById(customerId));
     }

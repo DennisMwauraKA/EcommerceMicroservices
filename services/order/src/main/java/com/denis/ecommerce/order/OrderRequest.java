@@ -1,5 +1,6 @@
 package com.denis.ecommerce.order;
 
+import com.denis.ecommerce.product.PurchaseRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
