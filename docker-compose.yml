@@ -60,6 +60,7 @@ services:
       - "22181:2181"
     networks:
       - microservices
+    restart: unless-stopped
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -77,6 +78,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
     networks:
       - microservices
+    restart: unless-stopped
 
 
 

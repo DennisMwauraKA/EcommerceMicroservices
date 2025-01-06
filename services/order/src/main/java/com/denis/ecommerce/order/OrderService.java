@@ -5,9 +5,14 @@ import com.denis.ecommerce.kafka.OrderConfirmation;
 import com.denis.ecommerce.kafka.OrderProducer;
 import com.denis.ecommerce.orderLine.OrderLineRequest;
 import com.denis.ecommerce.orderLine.OrderLineService;
+import com.denis.ecommerce.payment.PaymentClient;
+import com.denis.ecommerce.payment.PaymentRequest;
 import com.denis.ecommerce.product.ProductClient;
 import com.denis.ecommerce.product.PurchaseRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -17,16 +22,19 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
-    public OrderService(CustomerClient customerClient, OrderLineService orderLineService, ProductClient productClient, OrderRepository orderRepository, OrderMapper orderMapper, OrderProducer orderProducer) {
+    public OrderService(CustomerClient customerClient, ProductClient productClient, OrderRepository orderRepository, OrderMapper orderMapper, OrderLineService orderLineService, OrderProducer orderProducer, PaymentClient paymentClient) {
         this.customerClient = customerClient;
         this.productClient = productClient;
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.orderLineService = orderLineService;
         this.orderProducer = orderProducer;
+        this.paymentClient = paymentClient;
     }
 
+    //create an order
     public Integer createOrder(OrderRequest orderRequest) {
         // check the customer using id
         var customer = this.customerClient.findCustomerById(orderRequest.customerId()).orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -45,6 +53,17 @@ public class OrderService {
                     ));
 
         }
+// initiate payment
+        var paymentRequest = new PaymentRequest(
+                orderRequest.amount(),
+                orderRequest.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestPayment(
+                paymentRequest
+        );
         orderProducer.sendOrderConfirmation(
 
                 new OrderConfirmation(
@@ -57,4 +76,18 @@ public class OrderService {
         );
         return order.getId();
     }
+
+    // get all orders
+    public List<OrderResponse> findAllOrders() {
+        return orderRepository.findAll().stream().map(orderMapper::toFindAllOrders).collect(Collectors.toList());
+    }
+
+
+    // get order by id
+    public OrderResponse findOrderById(Integer id) {
+        return orderRepository.findById(id).map(orderMapper::toFindAllOrders).orElseThrow(() -> new RuntimeException("Order not found"));
+
+    }
+
+
 }

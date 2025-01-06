@@ -15,4 +15,16 @@ public class OrderMapper {
 
                 .build();
     }
+
+    public OrderResponse toFindAllOrders(Order order) {
+
+        return new OrderResponse(
+                order.getId(),
+                order.getTotal(),
+                order.getReference(),
+                order.getPaymentMethod(),
+                order.getCustomerId()
+
+        );
+    }
 }
