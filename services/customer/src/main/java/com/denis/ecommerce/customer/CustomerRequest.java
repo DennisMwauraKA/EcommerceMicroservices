@@ -1,8 +1,10 @@
 package com.denis.ecommerce.customer;
 
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 
 public record CustomerRequest(
@@ -16,9 +18,11 @@ public record CustomerRequest(
         String lastName,
 
         @Email(message = "email should be well formatted")
+        @Indexed(unique = true)
         String email,
 
-        @NotEmpty(message = "Address should not be empty")
+
+        @Valid
         Address address
 
 ) {

@@ -22,7 +22,7 @@ public class CustomerService {
     // create customer
     public String createCustomer(CustomerRequest customerRequest) {
         var customer = customerRepo.save(customerMapper.toCustomer(customerRequest));
-        return customer.toString();
+        return customer.getId();
 
     }
 

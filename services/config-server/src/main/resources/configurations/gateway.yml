@@ -1,0 +1,37 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          routes:
+            default-filters:
+              - RewritePath=/api/v1/(?<segment>.*), /${segment}
+            include-expression: "'${serviceId}' matches '.*-SERVICE'"
+      routes:
+        - filters:
+            - RewritePath=/api/v1/customer/(?<segment>.*), /${segment}
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/customer/**
+
+        - filters:
+            - RewritePath=/api/v1/order/(?<segment>.*), /${segment}
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order/**
+
+        - filters:
+            - RewritePath=/api/v1/products/(?<segment>.*), /${segment}
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/products/**
+
+        - filters:
+            - RewritePath=/api/v1/payment/(?<segment>.*), /${segment}
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payment/**
+
+server:
+  port: 8222
